@@ -6,8 +6,8 @@ from sys import exit
 if 'SAUCE_CONNECT_DIR' in os.environ:
     sc_dir = os.environ['SAUCE_CONNECT_DIR']
 else:
-    print "Unable to find Sauce Connect directory."
-    print "Please set SAUCE_CONNECT_DIR environment variable."
+    print("Unable to find Sauce Connect directory.")
+    print("Please set SAUCE_CONNECT_DIR environment variable.")
     exit(-1)
 
 

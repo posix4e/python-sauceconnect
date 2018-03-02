@@ -4,7 +4,7 @@ import unittest
 from selenium import webdriver
 import sys
 import os
-import httplib
+import http.client
 import base64
 import saucelabs.saucerest as saucerest
 try:
@@ -39,7 +39,7 @@ class SauceConnectTest(unittest.TestCase):
         self.assertTrue("Ruby" in self.driver.title)
 
     def tearDown(self):
-        print("Link to your job: https://saucelabs.com/jobs/%s" % self.driver.session_id)
+        print(("Link to your job: https://saucelabs.com/jobs/%s" % self.driver.session_id))
         job_passed = sys.exc_info() == (None, None, None)
         sc = SauceClient(self.username, self.access_key)
         sc.jobs.update_job(self.driver.session_id, passed=job_passed)

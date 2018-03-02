@@ -1,18 +1,19 @@
-import SimpleHTTPServer
-import SocketServer
-import httplib
+import http.server
+import socketserver
+import http.client
 import socket
 
 
 class Proxy():
     def __init__(self, host, port):
-        self.httpd = SocketServer.TCPServer((host, port), ProxyHandler)
+        self.httpd = socketserver.TCPServer((host, port), ProxyHandler)
         self.httpd.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     def start_server(self):
         try:
             self.httpd.serve_forever()
-        except socket.error, (value,message):
+        except socket.error as xxx_todo_changeme:
+            (value,message) = xxx_todo_changeme.args
             return -1
 
     def stop_server(self):
@@ -20,7 +21,7 @@ class Proxy():
 
 
 
-class ProxyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+class ProxyHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         url = self.parseUrl(self.path)
 
@@ -68,10 +69,10 @@ class ProxyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         }
 
     def mkWriter(self, url, h):
-        conn = httplib.HTTPConnection(url['host'], url['port'])
+        conn = http.client.HTTPConnection(url['host'], url['port'])
         conn.request("GET", url['path'])
         r1 = conn.getresponse()
-        print r1.status, r1.reason
+        print(r1.status, r1.reason)
 
         return r1.read()
 

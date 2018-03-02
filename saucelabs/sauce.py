@@ -24,7 +24,7 @@ class Connect():
     }
 
     def __init__(self, options={}):
-        print "Initializing Connect"
+        print("Initializing Connect")
 
         self.port = options['port'] if 'port' in options else 443;
 
@@ -49,16 +49,16 @@ class Connect():
         )
 
     def __enter__(self):
-        print "Entering Connect context"
+        print("Entering Connect context")
         self.startup_connect()
 
     def __exit__(self, type, value, traceback):
-        print "Leaving Connect context"
+        print("Leaving Connect context")
         self.shutdown_connect()
 
     # there is no createTunnel method in the Python implementation of Sauce Rest API
     def create_tunnel(self, options):
-        print "Creating Tunnel"
+        print("Creating Tunnel")
         data = dict(self.tunnelDefaults)
         data.update(options)
 
@@ -67,21 +67,21 @@ class Connect():
             data=data)
 
         if ('id' in ret):
-            print "Tunnel id is '%s'" % ret['id']
+            print("Tunnel id is '%s'" % ret['id'])
             return ret['id']
         else:
-            print "Unable to create tunnel"
+            print("Unable to create tunnel")
             return -1
 
     def cleanup_tunnels(self):
-        print "Cleaning up Tunnels"
+        print("Cleaning up Tunnels")
         tunnels = self.api.list_tunnels()
         for tunnelId in tunnels:
             tunnel = self.api.show_tunnel(tunnelId)
             if self.conflicting_tunnel(tunnel):
-                print "Found conflicting tunnel. Shutting it down."
+                print("Found conflicting tunnel. Shutting it down.")
                 self.api.delete_tunnel(tunnelId)
-                print "Tunnel '%s' was shutdown." % tunnelId
+                print("Tunnel '%s' was shutdown." % tunnelId)
 
     def conflicting_tunnel(self, tunnel):
         if (self.args['tunnel_identifier'] != None) & (self.args['tunnel_identifier'] == tunnel['tunnel_identifier']):
@@ -91,17 +91,17 @@ class Connect():
         return False
 
     def wait_tunnel(self, tunnel_id):
-        print "Waiting for VM"
+        print("Waiting for VM")
         while True:
             tunnel = self.api.show_tunnel(tunnel_id)
             if tunnel['status'] == 'running':
-                print "VM is now running"
-                print "VM host is '%s'" % tunnel['host']
+                print("VM is now running")
+                print("VM host is '%s'" % tunnel['host'])
                 return tunnel
             sleep(0.5)
 
     def setup_connect(self, tunnel):
-        print "Setting up Connect"
+        print("Setting up Connect")
         connect = SauceConnect(self.args['username'],
             self.args['accessKey'],
             tunnel['host'],
@@ -112,7 +112,7 @@ class Connect():
             self.args['kgpProxyUserPwd'])
         self.connectProcess = Process(target=connect.run)
         self.connectProcess.start()
-        print "Connect process: '%i'" % self.connectProcess.pid
+        print("Connect process: '%i'" % self.connectProcess.pid)
 
         return connect
 
@@ -124,12 +124,12 @@ class Connect():
         if self.args['proxy_host'] != None:
             self.start_proxy()
         else:
-            print "hmmm"
+            print("hmmm")
 
         self.connect = self.setup_connect(self.tunnel)
         status = self.connect.status()
         if status < 0:
-            print "Cannot start Sauce Connect."
+            print("Cannot start Sauce Connect.")
             return -1
 
     def shutdown_connect(self):
@@ -139,16 +139,16 @@ class Connect():
         self.stop_proxy()
 
     def start_proxy(self):
-        print "Starting local proxy"
+        print("Starting local proxy")
         proxy = Proxy(self.args['proxy_host'], self.args['proxy_port'])
 
         self.proxyProcess = Process(target=proxy.start_server)
         self.proxyProcess.start()
 
-        print "Proxy process: '%i'" % self.proxyProcess.pid
+        print("Proxy process: '%i'" % self.proxyProcess.pid)
 
         return proxy
 
     def stop_proxy(self):
-        print "Stopping local proxy"
+        print("Stopping local proxy")
         self.proxyProcess.terminate()

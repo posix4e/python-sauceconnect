@@ -19,11 +19,11 @@ class SauceConnect():
         connect.sc_set_int(self.context, connect.SC_PARAM_KGP_PORT, vmport)
 
         if (proxyhost != None):
-            print "Setting proxy host '%s'" % proxyhost
+            print("Setting proxy host '%s'" % proxyhost)
             connect.sc_set_string(self.context, connect.SC_PARAM_EXT_HOST, proxyhost)
 
         if (proxyport != None):
-            print "Setting proxy port '%i'" % proxyport
+            print("Setting proxy port '%i'" % proxyport)
             connect.sc_set_int(self.context, connect.SC_PARAM_EXT_PORT, proxyport)
 
         if (kgpproxy != None):
@@ -31,20 +31,20 @@ class SauceConnect():
             if (kgpproxyuserpwd != None):
                 connect.sc_set_string(self.context, connect.SC_PARAM_PROXY_USERPWD, kgpproxyuserpwd)
 
-        print "Initializing Sauce Connect"
+        print("Initializing Sauce Connect")
         st = connect.sc_init(self.context)
         if (st != 0):
-            print "sc_init() failed"
+            print("sc_init() failed")
 
     def run(self):
-        print "Starting to run Connect"
+        print("Starting to run Connect")
 
         connect.sc_run(self.context)
 
     def stop(self):
-        print "Waiting for Connect to stop..."
+        print("Waiting for Connect to stop...")
         connect.sc_stop(self.context)
-        print "Connect Stopped"
+        print("Connect Stopped")
 
     def free(self):
         connect.sc_free(self.context)
